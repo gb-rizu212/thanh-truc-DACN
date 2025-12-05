@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Phòng ảnh</title>
+		<link rel="stylesheet" href="style_index.css">
+		<link rel="stylesheet" href="style_room.css">
+	</head>
+	<body>
+		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #ffacac; font-size: 25px; text-align: center; flex-grow: 1;">Phòng ảnh</p> <!--flex grow cho chiếm k gian còn lại-->
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -893px; " >
+				<tr>
+					<td style="padding: 100px 10px">
+						<img src="assets/pet/pet_normal.png" alt="ur_pet" width="200px" height="200px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+                <div class="stats">
+                    <table class="table2 center2">
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar happiness" id="happinessBar">Vui vẻ</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar hunger" id="hungerBar">Đói bụng</div>
+                                </div>
+                            </td>	
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar health" id="healthBar">Sức khỏe</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar energy" id="energyBar">Năng lượng</div>
+                                </div>
+                            </td>
+                        </tr>
+						<tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+                    </table>
+                </div>
+                <ul class="nav">
+					<li><a class="nav-button" id="motiv-button">Motivation</a></li>
+					<li><a class="nav-button" id="note-button">Notes</a></li>
+				</ul>
+            </div>
+		</div>
+        <div class="messages"> 
+			<span id="pet_name">Baby</span>: 
+			<p style="font-size: 30px">Đây là một nơi tuyệt vời để lưu trữ ảnh truyền động lực đó.</p>
+		</div>
+	
+	<div class="secondary" id="close-all"> </div>
+	<div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+    </div>
+
+	<div id="settings" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+			<iframe src="settings.html" class="game-frame"></iframe>
+	</div>
+
+	<!-- POPUP Motivation -->
+	<div id="motivation" class="popup" aria-hidden="true">
+	<div class="head">
+		<h3>Motivation — Ảnh & Video</h3>
+		<div class="row">
+		<span class="small">Slideshow random (không lặp)</span>
+		<button id="mot-close">Đóng</button>
+		</div>
+	</div>
+
+	<div class="body">
+		<div class="mot-left">
+		<div class="uploader">
+			<input id="mot-files" type="file" accept="image/*,video/*" multiple />
+			<button id="mot-add">Thêm</button>
+			<button id="mot-clear">Xóa hết</button>
+		</div>
+		<div class="row">
+			<button id="mot-prev-idx">‹</button>
+			<button id="mot-next-idx">›</button>
+			<button id="mot-randomize">Random mới</button>
+		</div>
+		<div class="list" id="mot-list"></div>
+		</div>
+
+		<div class="mot-viewer" id="mot-viewer">
+		<div class="mot-controls">
+			<button class="btn" id="mot-prev">&lt;</button>
+		</div>
+
+		<div class="media-wrap" id="mot-media-wrap">
+			<!-- img / video injected -->
+		</div>
+
+		<div class="mot-controls right">
+			<button class="btn" id="mot-next">&gt;</button>
+		</div>
+		</div>
+	</div>
+	</div>
+
+	<div id="note" class="popup" aria-hidden="true">
+	<div class="head">
+		<h3>Notes</h3>
+		<div class="row">
+		<button id="note-close">Đóng</button>
+		</div>
+	</div>
+
+	<div class="body">
+		<div class="note-left">
+		<div class="note-toolbar">
+			<input id="folder-name" placeholder="Tên thư mục..." style="flex:1;padding:6px;border-radius:6px;border:1px solid #eee" />
+			<button id="create-folder">Tạo folder</button>
+		</div>
+
+		<div class="note-toolbar">
+			<input id="note-title-input" placeholder="Tiêu đề note..." style="flex:1;padding:6px;border-radius:6px;border:1px solid #eee" />
+			<button id="create-note">Tạo note</button>
+		</div>
+
+		<div>
+			<div class="small">Folders</div>
+			<div class="note-folders" id="folders-area"></div>
+		</div>
+
+		<div>
+			<div class="small">Notes</div>
+			<div class="note-list" id="notes-area"></div>
+		</div>
+		</div>
+		<div class="editor">
+		<div class="toolbar" id="editor-toolbar">
+			<button data-cmd="bold"><b>B</b></button>
+			<button data-cmd="italic"><i>I</i></button>
+			<button id="btn-upper">UPPER</button>
+			<button data-cmd="insertUnorderedList">• List</button>
+			<button id="btn-task">☐ Task list</button>
+			<button data-cmd="hiliteColor" data-value="yellow">Highlight</button>
+			<button id="btn-save">Lưu</button>
+			<button id="btn-delete" style="background:#ef4444;color:white">Xóa</button>
+		</div>
+
+		<input id="editor-title" class="title" placeholder="Tiêu đề..." />
+		<div id="editor-content" class="content" contenteditable="true" spellcheck="true"></div>
+		<div class="row" style="justify-content:flex-end;padding-top:6px">
+			<div class="small">Đang chỉnh: <span id="current-note-id">-</span></div>
+		</div>
+		</div>
+	</div>
+	</div>
+
+	<script>
+		 // Định nghĩa biến toàn cục cho tất cả trang
+  		window.API_BASE = 'http://localhost:3000/api';
+		/* ---------------------------
+		Utility: localStorage helpers
+		--------------------------- */
+		const db = {
+		get(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch(e){ return fallback; } },
+		set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+		};
+
+		/* ---------------------------
+		Popup open/close behavior
+		- Open 1 popup => close others
+		- Click outside => close
+		- Click same button toggles
+		--------------------------- */
+		const popups = {
+		settings: document.getElementById('settings'),	
+		motivation: document.getElementById('motivation'),
+		note: document.getElementById('note')
+		};
+		const buttons = {
+		sb: document.getElementById('settings-button'),
+		motiv: document.getElementById('motiv-button'),
+		note: document.getElementById('note-button'),
+		closeAll: document.getElementById('close-all')
+		};
+		function closeAllPopups(){ Object.values(popups).forEach(p => { p.style.display='none'; p.setAttribute('aria-hidden','true'); }); }
+		function togglePopup(name){
+		const p = popups[name];
+		const visible = p.style.display === 'flex';
+		closeAllPopups();
+		if(!visible){ p.style.display='flex'; p.setAttribute('aria-hidden','false'); }
+		}
+		buttons.sb.addEventListener('click', ()=> togglePopup('settings'));
+		buttons.motiv.addEventListener('click', ()=> togglePopup('motivation'));
+		buttons.note.addEventListener('click', ()=> togglePopup('note'));
+		buttons.closeAll.addEventListener('click', closeAllPopups);
+		document.getElementById('mot-close').addEventListener('click', closeAllPopups);
+		document.getElementById('note-close').addEventListener('click', closeAllPopups);
+
+		// click outside popups to close
+		document.addEventListener('click', (e)=>{
+		// if click is inside a popup or on nav buttons do nothing
+		if( e.target.closest('.popup') || e.target.closest('.nav') || e.target.closest('.nav-button')) return;
+		closeAllPopups();
+		});
+
+		
+		Object.values(popups).forEach(p => {
+		p.addEventListener('click', (e)=> e.stopPropagation());
+		});
+
+	</script>
+	<script src="script_pics.js"></script>
+	<script src="script_note.js"></script>
+	<script src="script_pet.js"></script>
+	</body>
+</html>

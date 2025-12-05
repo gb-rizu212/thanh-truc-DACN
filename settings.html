@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt</title>
+    <link rel="stylesheet" href="style_pet.css">
+    <link rel="stylesheet" href="style_index.css">
+    <style>
+        .settings-container {
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .settings-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .settings-section h3 {
+            color: #6a11cb;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .danger-zone {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffcccc;
+        }
+        
+        .danger-btn {
+            background: #ff4444;
+            color: white;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+    <body>
+        <div class="settings-container">
+            <h2>Cài đặt</h2>
+            
+            <!-- Thông báo -->
+            <div id="message" class="message"></div>
+            
+            <!-- Thông tin tài khoản -->
+            <div class="settings-section">
+                <h3>Thông tin tài khoản</h3>
+                <div class="form-group">
+                    <label>Tên đăng nhập</label>
+                    <input type="text" id="username" placeholder="Nhập tên đăng nhập mới">
+                </div>
+                <!-- <div class="form-group">
+                    <label>Email (tuỳ chọn)</label>
+                    <input type="email" id="email" placeholder="your@email.com">
+                </div> -->
+            </div>
+            
+            <!-- Đổi mật khẩu -->
+            <div class="settings-section">
+                <h3>Đổi mật khẩu</h3>
+                <div class="form-group">
+                    <label>Mật khẩu hiện tại</label>
+                    <input type="password" id="current-password" placeholder="Nhập mật khẩu hiện tại">
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới</label>
+                    <input type="password" id="new-password" placeholder="Nhập mật khẩu mới">
+                </div>
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu mới</label>
+                    <input type="password" id="confirm-password" placeholder="Nhập lại mật khẩu mới">
+                </div>
+            </div>
+            
+            <!-- Thú cưng -->
+            <div class="settings-section">
+                <h3>Thú cưng</h3>
+                <div class="form-group">
+                    <label>Tên thú cưng</label>
+                    <input type="text" id="pet-name" placeholder="Nhập tên mới cho thú cưng">
+                </div>
+            </div>
+            
+            <!-- Tuỳ chọn
+            <div class="settings-section">
+                <h3>Tuỳ chọn</h3>
+                <div class="form-group">
+                    <label>Giao diện</label>
+                    <select id="theme">
+                        <option value="light">Sáng</option>
+                        <option value="dark">Tối</option>
+                        <option value="colorful">Màu sắc</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ngôn ngữ</label>
+                    <select id="language">
+                        <option value="vi">Tiếng Việt</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div> -->
+            
+            <!-- Khu vực nguy hiểm -->
+            <div class="settings-section danger-zone">
+                <h3>Khu vực nguy hiểm</h3>
+                <div class="form-group">
+                    <p>Xoá tài khoản sẽ xoá vĩnh viễn tất cả dữ liệu của bạn.</p>
+                    <button class="btn danger-btn" onclick="confirmDeleteAccount()">Xoá tài khoản</button>
+                </div>
+            </div>
+            
+            <!-- Nút hành động -->
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="window.parent.closeAllPopups()">Hủy</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Lưu thay đổi</button>
+            </div>
+        </div>
+    
+        <script>
+        // Load thông tin hiện tại khi trang mở
+        document.addEventListener('DOMContentLoaded', loadCurrentSettings);
+        
+        // settings.html - SỬA PHẦN LOAD CURRENT SETTINGS
+            async function loadCurrentSettings() {
+                try {
+                    const token = localStorage.getItem('token');
+                    const headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    
+                    // Thêm token nếu có
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                    
+                    // Load user info
+                    try {
+                        const userRes = await fetch('/auth/me', { headers });
+                        if (userRes.ok) {
+                            const userData = await userRes.json();
+                            if (userData.username) document.getElementById('username').value = userData.username;
+                        }
+                    } catch (e) {
+                        console.log('Could not load user info:', e);
+                    }
+                    
+                    // Load pet info
+                    try {
+                        const petRes = await fetch('/api/pet/me', { headers });
+                        if (petRes.ok) {
+                            const petData = await petRes.json();
+                            if (petData.name) document.getElementById('pet-name').value = petData.name;
+                        }
+                    } catch (e) {
+                        console.log('Could not load pet info:', e);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading settings:', error);
+                }
+            }
+                    
+            function showMessage(text, type = 'success') {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = text;
+                messageDiv.className = `message ${type}`;
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+            
+            async function saveSettings() {
+            // Khai báo biến hasUpdate
+            let hasUpdate = false;
+
+            try {
+                const token = localStorage.getItem('token');
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                // Thu thập dữ liệu - KHÔNG mã hóa ở đây
+                const username = document.getElementById('username').value.trim();
+                const currentPassword = document.getElementById('current-password').value; // Plain text
+                const newPassword = document.getElementById('new-password').value; // Plain text
+                const confirmPassword = document.getElementById('confirm-password').value; // Plain text
+                const petName = document.getElementById('pet-name').value.trim();
+
+                // Validate password change
+                let passwordUpdates = null;
+                if (newPassword) {
+                    if (newPassword !== confirmPassword) {
+                        showMessage('Mật khẩu xác nhận không khớp!', 'error');
+                        return;
+                    }
+                    if (!currentPassword) {
+                        showMessage('Vui lòng nhập mật khẩu hiện tại!', 'error');
+                        return;
+                    }
+                    passwordUpdates = {
+                        current: currentPassword, // Gửi plain text
+                        new: newPassword // Gửi plain text
+                    };
+                }
+
+                // 1. Cập nhật username nếu có thay đổi
+                if (username) {
+                    try {
+                        const userRes = await fetch('/auth/me', { headers });
+                        if (userRes.ok) {
+                            const userData = await userRes.json();
+                            if (userData.username !== username) {
+                                const updateRes = await fetch('/auth/update-username', {
+                                    method: 'PUT',
+                                    headers,
+                                    body: JSON.stringify({ username })
+                                });
+
+                                if (updateRes.ok) {
+                                    hasUpdate = true;
+                                } else {
+                                    const error = await updateRes.json();
+                                    showMessage(error.error || 'Cập nhật username thất bại', 'error');
+                                    return;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Update username error:', e);
+                        showMessage('Lỗi khi cập nhật username', 'error');
+                        return;
+                    }
+                }
+
+                // 2. Cập nhật mật khẩu nếu có
+                if (passwordUpdates) {
+                    try {
+                        const res = await fetch('/auth/update-password', {
+                            method: 'PUT',
+                            headers,
+                            body: JSON.stringify(passwordUpdates)
+                        });
+
+                        if (res.ok) {
+                            hasUpdate = true;
+                        } else {
+                            const error = await res.json();
+                            showMessage(error.error || 'Đổi mật khẩu thất bại', 'error');
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Password update error:', error);
+                        showMessage('Lỗi khi đổi mật khẩu', 'error');
+                        return;
+                    }
+                }
+
+                // 3. Cập nhật tên pet
+                if (petName) {
+                    try {
+                        const petRes = await fetch('/api/pet/me', { headers });
+                        if (petRes.ok) {
+                            const petData = await petRes.json();
+                            if (petData.name !== petName) {
+                                const updateRes = await fetch('/api/pet/update-name', {
+                                    method: 'PUT',
+                                    headers,
+                                    body: JSON.stringify({ name: petName })
+                                });
+
+                                if (updateRes.ok) {
+                                    hasUpdate = true;
+                                } else {
+                                    const error = await updateRes.json();
+                                    showMessage(error.error || 'Cập nhật tên pet thất bại', 'error');
+                                    return;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Update pet name error:', e);
+                        showMessage('Lỗi khi cập nhật tên pet', 'error');
+                        return;
+                    }
+                }
+
+                if (hasUpdate) {
+                    showMessage('✅ Đã lưu cài đặt thành công!');
+
+                    // Xóa trường mật khẩu
+                    if (passwordUpdates) {
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                        document.getElementById('confirm-password').value = '';
+                    }
+
+                    // Refresh parent page if needed
+                    setTimeout(() => {
+                        if (window.parent && window.parent.loadPetFromBackend) {
+                            window.parent.loadPetFromBackend();
+                        }
+                        if (window.parent && window.parent.closeAllPopups) {
+                            window.parent.closeAllPopups();
+                        }
+                    }, 1000);
+                } else {
+                    showMessage('Không có thay đổi nào để lưu', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showMessage('❌ Có lỗi xảy ra: ' + error.message, 'error');
+            }
+        }
+
+            
+            function confirmDeleteAccount() {
+                if (confirm('Bạn có chắc chắn muốn xoá tài khoản? Hành động này không thể hoàn tác!')) {
+                    deleteAccount();
+                }
+            }
+            
+            async function deleteAccount() {
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('/auth/delete-account', {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (res.ok) {
+                        localStorage.removeItem('token');
+                        alert('Tài khoản đã được xoá. Bạn sẽ được chuyển về trang đăng nhập.');
+                        window.parent.location.href = 'login.html';
+                    } else {
+                        const error = await res.json();
+                        showMessage(error.error || 'Xoá tài khoản thất bại', 'error');
+                    }
+                } catch (error) {
+                    showMessage('❌ Có lỗi xảy ra: ' + error.message, 'error');
+                }
+            }
+        </script>
+    </body>
+</html>

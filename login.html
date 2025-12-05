@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - LilFlow</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .container {
+      width: 300px;
+      margin: 120px auto;
+      padding: 25px;
+      background: #222;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .container input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+    }
+
+    button {
+      width: 95%;
+      padding: 10px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    a {
+      color: #4caf50;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Đăng nhập</h2>
+
+    <input id="username" type="text" placeholder="Tên đăng nhập">
+    <input id="password" type="password" placeholder="Mật khẩu">
+
+    <button onclick="login()">Đăng nhập</button>
+
+    <p>Chưa có tài khoản? <a href="#" onclick="showSignup()">Đăng ký ngay</a></p>
+  </div>
+
+  <div class="container hidden" id="signupBox">
+    <h2>Đăng ký</h2>
+
+    <input id="newUser" type="text" placeholder="Tên đăng nhập">
+    <input id="newPass" type="password" placeholder="Mật khẩu">
+
+    <button onclick="signup()">Tạo tài khoản</button>
+
+    <p>Đã có tài khoản? <a href="#" onclick="showLogin()">Đăng nhập</a></p>
+  </div>
+
+  <script>
+      const API = "http://localhost:3000"; // backend
+
+      async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch(`${API}/auth/login`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert("Sai tài khoản hoặc mật khẩu!");
+          return;
+        }
+
+        // lưu token
+        localStorage.setItem("token", data.token);
+
+        // chuyển sang home
+        window.location.href = "home.html";
+      }
+
+      async function signup() {
+        const username = document.getElementById("newUser").value;
+        const password = document.getElementById("newPass").value;
+
+        const res = await fetch(`${API}/auth/signup`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          alert(data.error);
+          return;
+        }
+
+        alert("Đăng ký thành công! Mời bạn đăng nhập.");
+        showLogin();
+      }
+
+      function showSignup() {
+        document.querySelector(".container").classList.add("hidden");
+        document.getElementById("signupBox").classList.remove("hidden");
+      }
+
+      function showLogin() {
+        document.getElementById("signupBox").classList.add("hidden");
+        document.querySelector(".container").classList.remove("hidden");
+      }
+
+  </script>
+</body>
+</html>

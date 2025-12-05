@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Trang chủ</title>
+		<link rel="stylesheet" href="style_index.css">
+		<link rel="stylesheet" href="style_room.css">
+	</head>
+	<body>
+		 <!-- Thêm overlay -->
+    	<div class="popup-overlay" id="popup-overlay"></div>
+		
+		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #ffacac; font-size: 25px; text-align: center; flex-grow: 1;">Trang chủ</p> <!--flex grow cho chiếm k gian còn lại-->
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -893px; ">
+				<tr>
+					<td style="padding: 100px 10px">
+						<img src="assets/pet/pet_normal.png" alt="ur_pet" width="200px" height="200px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+				<div class="stats">
+					<table class="table2 center2">
+						<tr>
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar happiness" id="happinessBar">Vui vẻ</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar hunger" id="hungerBar">Đói bụng</div>
+								</div>
+							</td>	
+						</tr>
+						<tr>	
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar health" id="healthBar">Sức khỏe</div>
+								</div>
+							</td>
+						</tr>
+						<tr>	
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar energy" id="energyBar">Năng lượng</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<ul class="nav"> 
+					<li> <a class="nav-button" id="storage-button">Kho</a> </li>
+					<li> <a class="nav-button" id="shop-button">Cửa hàng</a> </li>
+					<li> <a class="nav-button" id="nv-button">Nhiệm vụ</a> </li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="messages"> 
+			<span id="pet_name">Baby</span> 
+			<p style="font-size: 30px">Bạn đang làm gì đó?</p>
+		</div>
+		
+		<div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+        </div>
+
+		<div id="settings" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopups()">X</button></div>
+			<iframe src="settings.html" class="game-frame"></iframe>
+		</div>
+
+		 <div id="storage" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopups()">X</button></div>
+			<div class="popup-content">
+				<div class="tabs">
+					<button class="tab-btn active" onclick="showTab('tab-food')">Thức ăn</button>
+					<button class="tab-btn" onclick="showTab('tab-potion')">Thuốc</button>
+				</div>
+				
+				<div id="tab-food" class="tab-content active">
+					<div id="storage-food" class="storage-grid"></div>
+				</div>
+				
+				<div id="tab-potion" class="tab-content">
+					<div id="storage-potion" class="storage-grid"></div>
+				</div>
+			</div>
+		</div>
+
+        <div id="shop" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopups()">X</button></div>
+			<div id="shop-list"></div>
+
+		</div>
+
+        <div id="nv" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopups()">X</button></div>
+			<p style="font-size: 75px;">Chức năng đang được phát triển</p>
+		</div>
+
+        <div id="stonot" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopups()">X</button></div>
+			<p>Chức năng này đang được phát triển</p>
+		</div>
+
+		<script src="script_home.js"></script>
+		<script src="script_pet.js"></script>
+		<script>
+			const API_BASE = 'http://localhost:3000/api';
+			// Hàm mở popup home.html
+			function openPopup(id) {
+				closeAllPopups();
+				const popup = document.getElementById(id);
+				const overlay = document.getElementById('popup-overlay');
+				
+				if (popup) {
+					popup.classList.add('active');
+					popup.style.display = 'block';
+				}
+				if (overlay) {
+					overlay.classList.add('active');
+					overlay.style.display = 'block';
+				}
+				
+				// Nếu là shop, load dữ liệu
+				if (id === 'shop') {
+					loadShop();
+				}
+			}
+
+
+			// Hàm đóng tất cả popup
+			function closeAllPopups() {
+				document.querySelectorAll('.popup').forEach(popup => {
+					popup.classList.remove('active');
+					popup.style.display = 'none';
+				});
+				
+				const overlay = document.getElementById('popup-overlay');
+				if (overlay) {
+					overlay.classList.remove('active');
+					overlay.style.display = 'none';
+				}
+			}
+
+			// Gán sự kiện cho các nút - home
+			document.getElementById("settings-button").onclick = () => openPopup("settings");
+			document.getElementById("storage-button").onclick = () => openPopup("storage");
+			document.getElementById("shop-button").onclick = () => openPopup("shop");
+			document.getElementById("nv-button").onclick = () => openPopup("nv");
+
+			// Đóng popup khi click vào overlay
+			document.getElementById('popup-overlay').onclick = closeAllPopups;
+
+			// Ngăn sự kiện click trong popup lan ra ngoài
+			document.querySelectorAll('.popup').forEach(popup => {
+				popup.onclick = (e) => e.stopPropagation();
+			});
+			// Sửa hàm openPopup để load data tương ứng
+			function openPopup(id) {
+				closeAllPopups();
+				const popup = document.getElementById(id);
+				const overlay = document.getElementById('popup-overlay');
+				
+				if (popup) {
+					popup.classList.add('active');
+					popup.style.display = 'block';
+				}
+				if (overlay) {
+					overlay.classList.add('active');
+					overlay.style.display = 'block';
+				}
+				
+				// Load data tương ứng
+				switch(id) {
+					case 'shop':
+						loadShop();
+						break;
+					case 'storage':
+						loadStorageData();
+						break;
+					case 'nv':
+						// Tạm thời để trống
+						break;
+				}
+			}
+				
+		</script>
+	</body>
+</html>

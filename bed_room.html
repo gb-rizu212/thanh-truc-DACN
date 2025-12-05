@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Phòng ngủ</title>
+		<link rel="stylesheet" href="style_index.css">
+        <link rel="stylesheet" href="style_room.css">
+	</head>
+	<body>
+  		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #ffacac; font-size: 25px; text-align: center; flex-grow: 1;">Phòng ngủ</p> <!--flex grow cho chiếm k gian còn lại-->
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -950px; " >
+				<tr>
+					<td style="padding: 100px 10px">
+						<img src="assets/pet/pet_sleeping.png" alt="ur_pet" width="150px" height="150px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+                <div class="stats">
+                    <table class="table2 center2">
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar happiness" id="happinessBar">Vui vẻ</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar hunger" id="hungerBar">Đói bụng</div>
+                                </div>
+                            </td>	
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar health" id="healthBar">Sức khỏe</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar energy" id="energyBar">Năng lượng</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								<!-- <button onclick="sleepPet()">Ngủ</button> -->
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+                    </table>
+                </div>
+                <ul class="nav">
+                    <li> <a class="nav-button" id="nap-button">Chợp mắt</a> </li>
+                    <li> <a class="nav-button" id="sleep-button">Ngủ</a> </li>
+                    <li> <a class="nav-button" id="mood_track-button">Tâm trạng</a> </li>
+                    <li> <a class="nav-button" id="journal-button">Nhật ký</a> </li>
+                </ul>
+            </div>
+		</div>
+
+        <div class="messages"> 
+			<span id="pet_name">Baby</span>: 
+			<p style="font-size: 30px">Ngủ thôi zzz.</p>
+		</div>
+		
+        <div class="secondary" id="close-all"> </div>
+        <div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+        </div>
+        
+        <div id="settings" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+			<iframe src="settings.html" class="game-frame"></iframe>
+		</div>
+
+        <div id="nap" class="popup" aria-hidden="true">
+            <div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <p style="font-text: 50px;">Chức năng này đang được phát triển.</p>
+        </div>
+
+        <div id="sleep" class="popup" aria-hidden="true">
+            <div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <p style="font-size: 50px;">Chức năng đang được phát triển</p>
+        </div>
+
+        <div id="mood_track" class="popup" aria-hidden="true">
+            <div class="head"><h3>Theo dõi tâm trạng</h3><button onclick="closeAllPopup()">X</button></div>
+            <div class="body">
+                <div class="cal-wrap">
+                    <div class="cal-left" style="width:35%;">
+                        <div id="calendar_small"></div>
+                        <hr />
+                        <div>
+                        <h4>Lịch sử theo mood</h4>
+                        <div id="mood_history"></div>
+                    </div>
+                </div>
+                <div class="cal-right" style="width:65%;">
+                    <div>
+                        <strong id="day_title">Chọn ngày để xem/ghi</strong>
+                        <div class="small">Bạn có thể chọn mood, chỉnh ngày và viết nhật ký cho ngày đó.</div>
+                    </div>
+
+                    <div>
+                        <h4>Chọn Mood</h4>
+                        <div id="right_mood_selector" class="mood-grid">
+                            <span data-mood="😭">😭</span>
+                            <span data-mood="😠">😠</span>
+                            <span data-mood="😑">😑</span>
+                            <span data-mood="😌">😌</span>
+                            <span data-mood="☺️">☺️</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4>Ghi chú / Journal</h4>
+                        <textarea id="day_text" style="width:100%;height:140px;padding:8px;border-radius:6px;border:1px solid #eee"></textarea>
+                    </div>
+
+                    <div style="display:flex;gap:8px">
+                        <button id="save_day">Lưu</button>
+                        <button id="open_journal_from_day">Mở nhật ký liên quan</button>
+                    </div>
+
+
+                    <div>
+                        <h4>Nhật ký ngày</h4>
+                            <div id="day_journal_list" class="journal-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div id="journal" class="popup" aria-hidden="true">
+        <div class="head"><h3>Nhật ký</h3><button onclick="closeAllPopup()">X</button></div>
+        <div class="body">
+            <div style="display:flex;gap:12px;width:70%;">
+                <div style="flex:1">
+                    <div style="display:flex;gap:8px;margin-bottom:8px">
+                        <input id="journal_date" type="date" style="padding:6px" />
+                        <input id="journal_title" placeholder="Tiêu đề (tuỳ chọn)" style="flex:1;padding:6px" />
+                        <select id="journal_mood" style="padding:6px">
+                        <option value="">(mood)</option>
+                        <option>😭</option>
+                        <option>😠</option>
+                        <option>😑</option>
+                        <option>😌</option>
+                        <option>☺️</option>
+                        </select>
+                    </div>
+                    <div class="editor-toolbar" id="editor-toolbar" style="color:#666;background:#FF7E5F;">
+                        <button data-cmd="bold" style="background:#a3422a;"><b>B</b></button>
+                        <button data-cmd="italic" style="background:#a3422a;"><i>I</i></button>
+                        <button id="btn-upper" style="background:#a3422a;">UPPER</button>
+                        <button data-cmd="insertUnorderedList" style="background:#a3422a;">• List</button>
+                        <button id="btn-task" style="background:#a3422a;">☐ Task list</button>
+                        <button data-cmd="hiliteColor" data-value="yellow" style="background:#a3422a;">Highlight</button>
+                        <button id="btn-save" style="background:#a3422a;">Lưu</button>
+                        <button id="btn-delete" style="background:#ef4444;color:white">Xóa</button>
+                        <button id="btn-form" style="background:#a3422a;color:white">Mẫu viết nhật ký</button>
+                    </div>
+                    <div id="editor-content" class="editor-content" contenteditable="true"></div>
+                </div>    
+            </div>
+            <div style="width:30%">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <strong>Danh sách nhật ký</strong>
+                    <div>
+                        <select id="sort-select" style="margin-right: 10px;">
+                            <option value="dateDesc">Mới nhất trước</option>
+                            <option value="dateAsc">Cũ nhất trước</option>
+                            <option value="mood">Theo tâm trạng</option>
+                            <option value="lengthAsc">Nội dung ngắn đến dài</option>
+                            <option value="lengthDesc">Nội dung dài đến ngắn</option>
+                        </select>
+                        <button id="create_quick">+ Mới</button>
+                    </div>
+                </div>
+                <div id="notes_area" class="journal-list"></div>
+            </div>
+        </div>
+    </div>
+        <script src="script_bedr.js"></script>
+		<script src="script_pet.js"></script>
+        <script src="script_note.js"></script>
+	</body>
+</html>

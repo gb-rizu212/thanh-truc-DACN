@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Game 3</title>
+        <style>
+            body {
+                background: url("assets/duck_hunt/duckhunt-bg-4k.png");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-attachment: fixed;
+                /* cursor: url("assets/duck_hunt/target.png"), auto; */
+            }
+
+            @font-face {
+                font-family: gameFont;
+                src: url("assets/duck_hunt/game-font.otf");
+            }
+
+            #score {
+                font-size: 30px;
+                font-family: gameFont;  
+                color: white;
+
+                user-select: none;
+                -webkit-user-select: none;      /* Chrome, Opera */
+                -webkit-touch-callout: none;    /* Safari */
+                -moz-user-select: none;         /* Firefox */
+                -ms-user-select: none;          /* Internet Explorer/Edge */
+            }
+
+            img {
+                user-select: none;
+                -webkit-user-select: none;      /* Chrome, Opera */
+                -webkit-touch-callout: none;    /* Safari */
+                -moz-user-select: none;         /* Firefox */
+                -ms-user-select: none;          /* Internet Explorer/Edge */
+            }
+            .start-screen, .game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            font-family: gameFont;
+        }
+
+        .start-screen h2, .game-over-screen h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #ffcc00;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        .start-screen p, .game-over-screen p {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.2em;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            max-width: 80%;
+        }
+
+        .controls li {
+            margin: 10px 0;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .start-btn, .restart-btn {
+            padding: 15px 30px;
+            font-size: 2em;
+            background: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-family: gameFont;
+            text-shadow: 2px 2px 0 #000;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover, .restart-btn:hover {
+            transform: scale(1.05);
+            background: #ff5500;
+        }
+
+        .game-over-screen {
+            display: none;
+        }
+
+        .game-stats {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: gameFont;
+            font-size: 1.8em;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .game-stats div {
+            margin: 5px 0;
+        }
+
+        #score {
+            font-size: 2.5em;
+            color: #ffcc00;
+            text-shadow: 2px 2px 0 #000;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: gameFont;
+        }
+
+        .timer-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(to right, #00ff00, #ffff00, #ff0000);
+            width: 100%;
+            transition: width 1s linear;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="start-screen">
+        <h2>Săn vịt</h2>
+        <p>Bắn vịt! Tốc độ tăng dần theo thời gian.</p>
+        <p>High Score: <span id="start-high-score">0</span></p>
+        <div class="stats">
+            <div class="stat">Săn vịt trong 60 giây</div>
+            <div class="stat">Tốc độ tăng mỗi 10 giây</div>
+        </div>
+        <!-- <div class="controls">
+            <p>Luật chơi:</p>
+            <ul>
+                <li>Click vào vịt để săn: +1 điểm</li>
+                <li>Bắn trật 3 lần: Game Over!</li>
+                <li>Tốc độ vịt tăng dần theo thời gian</li>
+            </ul>
+        </div> -->
+        <button class="start-btn" onclick="startGame()">Bắt đầu săn</button>
+    </div>
+    
+    <div class="game-over-screen">
+        <h2 id="game-over-title">Hết giờ!</h2>
+        <p id="game-over-message"></p>
+        <p>Vịt săn được: <span id="final-score">0</span></p>
+        <p>High Score: <span id="end-high-score">0</span></p>
+        <button class="restart-btn" onclick="restartGame()">Săn tiếp</button>
+    </div>
+    
+    <div class="game-stats">
+        <div>Thời gian: <span id="time-left">60</span>s</div>
+        <div>Bắn trật: <span id="miss-count">0</span>/3</div>
+        <div>Tốc độ: x<span id="speed-multiplier">1.0</span></div>
+    </div>
+    
+    <div class="timer-bar">
+        <div class="timer-fill" id="timer-fill"></div>
+    </div>
+    
+    <div id="score">0</div>
+
+        <script>
+         // Game variables
+    let ducks = [];
+    let duckCount = 1;
+    let duckImageNames = ["assets/duck_hunt/duck-left.gif", "assets/duck_hunt/duck-right.gif"];
+    let duckWidth = 120;  // Tăng kích thước vịt
+    let duckHeight = 116;
+    let baseVelocity = 4; // Giảm tốc độ
+    let velocityMultiplier = 1.0;
+    
+    let gameWidth = window.innerWidth;
+    let gameHeight = window.innerHeight;
+    
+    let score = 0;
+    let gameStarted = false;
+    let gameTime = 60;
+    let timeLeft = gameTime;
+    let gameTimer;
+    let speedTimer;
+    let highScore = localStorage.getItem('duckHighScore') || 0;
+    let duckTimer;
+    let isDogShowing = false;
+    
+    // Initialize
+    window.onload = function() {
+        document.getElementById('start-high-score').textContent = highScore;
+        gameWidth = window.innerWidth;
+        gameHeight = window.innerHeight;
+    }
+
+    function startGame() {
+        document.querySelector('.start-screen').style.display = 'none';
+        gameStarted = true;
+        isDogShowing = false;
+        resetGame();
+        startTimers();
+        setTimeout(addDucks, 1000);
+    }
+
+    function resetGame() {
+        score = 0;
+        timeLeft = gameTime;
+        velocityMultiplier = 1.0;
+        
+        document.getElementById('score').textContent = score;
+        document.getElementById('time-left').textContent = timeLeft;
+        document.getElementById('speed-multiplier').textContent = velocityMultiplier.toFixed(1);
+        document.getElementById('timer-fill').style.width = '100%';
+        
+        // Remove all ducks
+        ducks.forEach(duck => {
+            if (duck.image.parentNode) {
+                document.body.removeChild(duck.image);
+            }
+        });
+        ducks = [];
+        
+        // Remove any remaining dogs
+        const dogs = document.querySelectorAll('img[src*="dog"]');
+        dogs.forEach(dog => {
+            if (dog.parentNode) {
+                document.body.removeChild(dog);
+            }
+        });
+    }
+
+    function startTimers() {
+        // Game timer
+        clearInterval(gameTimer);
+        gameTimer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('time-left').textContent = timeLeft;
+            document.getElementById('timer-fill').style.width = `${(timeLeft / gameTime) * 100}%`;
+            
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }, 1000);
+        
+        // Speed increase timer
+        clearInterval(speedTimer);
+        speedTimer = setInterval(() => {
+            velocityMultiplier += 0.1;
+            document.getElementById('speed-multiplier').textContent = velocityMultiplier.toFixed(1);
+        }, 10000);
+    }
+
+    function pauseTimers() {
+        clearInterval(gameTimer);
+        clearInterval(speedTimer);
+        clearInterval(duckTimer);
+    }
+
+    function resumeTimers() {
+        if (!gameStarted || isDogShowing) return;
+        
+        startTimers();
+        duckTimer = setInterval(moveDucks, 1000/60);
+    }
+
+    function addDucks() {
+        if (!gameStarted || isDogShowing) return;
+        
+        ducks = [];
+        duckCount = Math.floor(Math.random() * 2) + 1;
+        
+        for (let i = 0; i < duckCount; i++) {
+            let duckImageName = duckImageNames[Math.floor(Math.random() * 2)];
+            let duckImage = document.createElement("img");
+            duckImage.src = duckImageName;
+            duckImage.width = duckWidth;
+            duckImage.height = duckHeight;
+            duckImage.style.position = "absolute";
+            duckImage.style.cursor = "url('assets/duck_hunt/target.png'), auto";
+            duckImage.style.zIndex = "5";
+            
+            // Sửa lỗi click - chỉ cần click đơn giản
+            duckImage.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // Phát âm thanh bắn trúng
+                let duckShotSound = new Audio("assets/duck_hunt/duck-shot.mp3");
+                duckShotSound.play();
+                
+                // Tăng điểm
+                score++;
+                document.getElementById("score").textContent = score;
+                
+                // Thêm hiệu ứng nổ
+                createExplosion(
+                    parseInt(this.style.left) + this.width/2,
+                    parseInt(this.style.top) + this.height/2
+                );
+                
+                // Xóa vịt
+                if (this.parentNode) {
+                    document.body.removeChild(this);
+                }
+                
+                // Xóa khỏi mảng
+                ducks = ducks.filter(d => d.image !== this);
+                
+                // Nếu đã bắn hết vịt, thêm chó
+                if (ducks.length === 0) {
+                    addDog(duckCount);
+                }
+            });
+            
+            document.body.appendChild(duckImage);
+            
+            // Tạo vịt ở vị trí ngẫu nhiên, không quá gần biên
+            let duck = {
+                image: duckImage,
+                x: randomPosition(Math.max(100, gameWidth - duckWidth - 100)),
+                y: randomPosition(Math.max(100, gameHeight - duckHeight - 100)),
+                velocityX: baseVelocity * velocityMultiplier,
+                velocityY: baseVelocity * velocityMultiplier
+            };
+            
+            // Đảm bảo vịt không xuất hiện quá gần mép
+            duck.x = Math.max(50, Math.min(duck.x, gameWidth - duckWidth - 50));
+            duck.y = Math.max(50, Math.min(duck.y, gameHeight - duckHeight - 50));
+            
+            duck.image.style.left = duck.x + "px";
+            duck.image.style.top = duck.y + "px";
+            
+            // Xác định hướng ban đầu
+            if (Math.random() > 0.5) {
+                duck.velocityX = -duck.velocityX;
+                duck.image.src = duckImageNames[0];
+            }
+            
+            ducks.push(duck);
+        }
+        
+        // Di chuyển vịt
+        clearInterval(duckTimer);
+        duckTimer = setInterval(moveDucks, 1000/60);
+    }
+
+    function moveDucks() {
+        if (!gameStarted || isDogShowing) return;
+        
+        ducks.forEach(duck => {
+            // Di chuyển
+            duck.x += duck.velocityX;
+            duck.y += duck.velocityY;
+            
+            // Kiểm tra va chạm với biên
+            let hitEdge = false;
+            
+            if (duck.x < 0) {
+                duck.x = 0;
+                duck.velocityX = Math.abs(duck.velocityX);
+                duck.image.src = duckImageNames[1];
+                hitEdge = true;
+            }
+            
+            if (duck.x + duckWidth > gameWidth) {
+                duck.x = gameWidth - duckWidth;
+                duck.velocityX = -Math.abs(duck.velocityX);
+                duck.image.src = duckImageNames[0];
+                hitEdge = true;
+            }
+            
+            if (duck.y < 0) {
+                duck.y = 0;
+                duck.velocityY = Math.abs(duck.velocityY);
+                hitEdge = true;
+            }
+            
+            if (duck.y + duckHeight > gameHeight) {
+                duck.y = gameHeight - duckHeight;
+                duck.velocityY = -Math.abs(duck.velocityY);
+                hitEdge = true;
+            }
+            
+            // Đôi khi đổi hướng ngẫu nhiên
+            if (!hitEdge && Math.random() < 0.01) {
+                duck.velocityY *= -1;
+            }
+            
+            // Cập nhật vị trí
+            duck.image.style.left = duck.x + "px";
+            duck.image.style.top = duck.y + "px";
+        });
+    }
+
+    function addDog(duckCount) {
+        isDogShowing = true;
+        
+        // Tạm dừng các timer
+        pauseTimers();
+        
+        // Tạo chó
+        let dogImage = document.createElement("img");
+        if (duckCount === 1) {
+            dogImage.src = "assets/duck_hunt/dog-duck1.png";
+            dogImage.width = 172;
+        } else {
+            dogImage.src = "assets/duck_hunt/dog-duck2.png";
+            dogImage.width = 224;
+        }
+        
+        dogImage.height = 152;
+        dogImage.style.position = "fixed";
+        dogImage.style.bottom = "-200px"; // Bắt đầu từ dưới màn hình
+        dogImage.style.left = "50%";
+        dogImage.style.transform = "translateX(-50%)";
+        dogImage.style.zIndex = "10";
+        dogImage.style.transition = "bottom 0.5s ease-out";
+        document.body.appendChild(dogImage);
+        
+        // Phát âm thanh
+        let dogScoreSound = new Audio("assets/duck_hunt/dog-score.mp3");
+        dogScoreSound.play();
+        
+        // Chó xuất hiện
+        setTimeout(() => {
+            dogImage.style.bottom = "0px";
+        }, 100);
+        
+        // Chó ở lại 2 giây rồi biến mất
+        setTimeout(() => {
+            // Chó biến mất
+            dogImage.style.bottom = "-200px";
+            
+            setTimeout(() => {
+                if (dogImage.parentNode) {
+                    document.body.removeChild(dogImage);
+                }
+                
+                // Tiếp tục game
+                isDogShowing = false;
+                if (gameStarted) {
+                    resumeTimers();
+                    addDucks();
+                }
+            }, 500);
+        }, 2000);
+    }
+
+    function createExplosion(x, y) {
+        const explosion = document.createElement("div");
+        explosion.style.position = "absolute";
+        explosion.style.left = (x - 25) + "px";
+        explosion.style.top = (y - 25) + "px";
+        explosion.style.width = "50px";
+        explosion.style.height = "50px";
+        explosion.style.background = "radial-gradient(circle, #ff0000, #ffff00, transparent)";
+        explosion.style.borderRadius = "50%";
+        explosion.style.zIndex = "6";
+        
+        // Thêm animation bằng JavaScript
+        let scale = 0;
+        let opacity = 1;
+        const animate = setInterval(() => {
+            scale += 0.1;
+            opacity -= 0.05;
+            
+            explosion.style.transform = `scale(${scale})`;
+            explosion.style.opacity = opacity;
+            
+            if (opacity <= 0) {
+                clearInterval(animate);
+                if (explosion.parentNode) {
+                    document.body.removeChild(explosion);
+                }
+            }
+        }, 30);
+        
+        document.body.appendChild(explosion);
+    }
+
+    function randomPosition(limit) {
+        return Math.floor(Math.random() * limit);
+    }
+
+    function endGame(message = "Hết giờ!") {
+        gameStarted = false;
+        pauseTimers();
+        
+        // Remove all ducks
+        ducks.forEach(duck => {
+            if (duck.image.parentNode) {
+                document.body.removeChild(duck.image);
+            }
+        });
+        ducks = [];
+        
+        // Remove any remaining dogs
+        const dogs = document.querySelectorAll('img[src*="dog"]');
+        dogs.forEach(dog => {
+            if (dog.parentNode) {
+                document.body.removeChild(dog);
+            }
+        });
+        
+        // Update high score
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('duckHighScore', highScore);
+        }
+        
+        // Show game over screen
+        document.getElementById('final-score').textContent = score;
+        document.getElementById('end-high-score').textContent = highScore;
+        document.getElementById('game-over-message').textContent = message;
+        document.querySelector('.game-over-screen').style.display = 'flex';
+    }
+
+    function restartGame() {
+        document.querySelector('.game-over-screen').style.display = 'none';
+        startGame();
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        gameWidth = window.innerWidth;
+        gameHeight = window.innerHeight;
+    });
+        </script>
+    </body>
+</html>

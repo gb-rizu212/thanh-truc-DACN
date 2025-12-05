@@ -1,0 +1,16 @@
+{
+  "name": "pet-game-server",
+  "version": "1.0.0",
+  "description": "Server for pet game",
+  "main": "server_test.js",
+  "scripts": {
+    "start": "node server_test.js",  
+    "dev": "node server_test.js",
+    "init-db": "mysql -u root -p < database.sql",
+    "seed-db": "mysql -u root -p petgame < seed_data.sql",
+    "check-db": "node check_data.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Phòng bếp</title>
+		<link rel="stylesheet" href="style_index.css">
+    <link rel="stylesheet" href="style_room.css">
+	</head>
+	<body>
+  		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #FFACAC; font-size: 25px; text-align: center; flex-grow: 1;">phòng bếp</p> <!--flex grow cho chiếm k gian còn lại-->
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -893px; " >
+				<tr>
+					<td style="padding: 100px 10px">
+						<img src="assets/pet/pet_hungry.png" alt="ur_pet" width="200px" height="200px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+                <div class="stats">
+                    <table class="table2 center2">
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar happiness" id="happinessBar">Vui vẻ</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar hunger" id="hungerBar">Đói bụng</div>
+                                </div>
+                            </td>	
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar health" id="healthBar">Sức khỏe</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar energy" id="energyBar">Năng lượng</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								<!-- <button onclick="sleepPet()">Ngủ</button> -->
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+                    </table>
+                </div>
+                <ul class="nav">
+                    <li> <a class="nav-button" id="food_button">Thực phẩm</a> </li>
+                    <li> <a class="nav-button" id="potion_button">Thuốc</a> </li>
+                    <li> <a class="nav-button" id="bathr_button">Phòng tắm</a> </li>
+                </ul>
+            </div>
+
+		</div>
+
+        <div class="messages"> 
+          <span id="pet_name">Baby</span>: 
+          <p style="font-size: 30px">Đừng để tớ đói nhé.</p>
+        </div>
+		
+        <div class="secondary" id="close-all"> </div>
+        <div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+        </div>
+
+        <div id="settings" class="popup" aria-hidden="true">
+          <div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+          <iframe src="settings.html" class="game-frame"></iframe>
+        </div>
+
+        <div id="food" class="popup" aria-hidden="true">
+            <div class="head"><h3>Thực phẩm</h3><button onclick="closeAllPopup()">X</button></div>
+            <div class="body" id="food_list">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            </div>
+            <div id="food_grid" class="items-grid"></div>
+            </div>
+        </div>
+
+        <div id="potion" class="popup" aria-hidden="true">
+            <div class="head"><h3>Thuốc</h3><button onclick="closeAllPopup()">X</button></div>
+            <div class="body" id="potion_list">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div id="potion_grid" class="items-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div id="bathr" class="popup" aria-hidden="true">
+            <div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+           <p style="font-size:75px;">Chức năng đang được phát triển</p>
+        </div>
+
+       <script>
+         // Định nghĩa biến toàn cục cho tất cả trang
+          // Utility functions for API calls
+          const API_BASE = 'http://localhost:3000/api'; // THÊM /api Ở ĐÂY
+
+
+          // POPUP MANAGEMENT
+          const popupIds = ["food", "potion", "bathr", "settings"];
+
+          function closeAllPopup() {
+            console.log('🔒 Closing all popups');
+            popupIds.forEach(id => {
+              const p = document.getElementById(id);
+              if (p) {
+                p.style.display = "none";
+                p.classList.remove('active');
+              }
+            });
+            
+            const overlay = document.getElementById('popup-overlay');
+            if (overlay) {
+              overlay.classList.remove('active');
+              overlay.style.display = "none";
+            }
+          }
+
+          function togglePopup(id) {
+            console.log('🎯 Toggle popup:', id);
+            const popup = document.getElementById(id);
+            if (!popup) {
+              console.error('❌ Popup not found:', id);
+              return;
+            }
+
+            const isVisible = popup.style.display === "flex" || popup.classList.contains('active');
+            
+            closeAllPopup();
+            
+            if (!isVisible) {
+              console.log('👉 Showing popup:', id);
+              popup.style.display = "flex";
+              popup.classList.add('active');
+              
+              // Create overlay
+              let overlay = document.getElementById('popup-overlay');
+              if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'popup-overlay';
+                overlay.className = 'popup-overlay';
+                overlay.onclick = closeAllPopup;
+                document.body.appendChild(overlay);
+              }
+              overlay.classList.add('active');
+              overlay.style.display = "block";
+              
+              // Load content
+              if (id === 'food') {
+                loadFoodList();
+              } else if (id === 'potion') {
+                loadPotionList();
+              }
+            }
+          }
+
+          // Gán sự kiện khi DOM loaded
+          document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM loaded, initializing popup buttons...');
+            
+            // Gán sự kiện cho các nút
+            const sb = document.getElementById("settings-button");
+            const foodBtn = document.getElementById("food_button");
+            const potionBtn = document.getElementById("potion_button");
+            const bathrBtn = document.getElementById("bathr_button");
+            
+            if (sb) {
+              sb.addEventListener('click', function(e) {
+                e.preventDefault();
+                togglePopup("settings");
+              })};
+
+            if (foodBtn) {
+              foodBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🍎 Food button clicked');
+                togglePopup("food");
+              });
+            }
+            
+            if (potionBtn) {
+              potionBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('💊 Potion button clicked');
+                togglePopup("potion");
+              });
+            }
+            
+            if (bathrBtn) {
+              bathrBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('🚿 Bathroom button clicked');
+                togglePopup("bathr");
+              });
+            }
+            
+            // Load initial data
+            loadCompactGrids();
+          });
+        </script>
+    <script src="script_kitchen.js"></script>
+		<script src="script_pet.js"></script>
+	</body>
+</html>

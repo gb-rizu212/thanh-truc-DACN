@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 1</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #12181f;
+            color: white;
+            height: 100vh;
+            width: 100vw;
+            /* overflow: hidden; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            font-size: 50px;
+              margin-bottom: 20px;
+        }
+
+        p {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+        } 
+         .game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .actions button {
+            padding: 8px 16px;
+            font-size: 30px;
+            border-radius: 10px;
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .grid-container {
+        display: grid;
+        justify-content: center;
+        grid-gap: 16px;
+        grid-template-columns: repeat(6, 70px);
+        grid-template-rows: repeat(2, calc(70px / 2 * 3));
+        max-width: 90%;
+        max-height: 70vh;
+        }
+
+        .card {
+        aspect-ratio: 2/3; 
+        height: calc(70px / 2 * 3);
+        width: 70px;
+        border-radius: 10px;
+        background-color: white;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: all 0.5s ease-in-out;
+          cursor: pointer;
+        }
+
+        .front-image {
+        width: 60px;
+        height: 60px;
+        }
+
+        .card.flipped {
+        transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            backface-visibility: hidden;
+            position: absolute;
+            border-radius: 10px;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .card .front {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        .card .back {
+        /* background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='25' height='25' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M25 30a5 5 0 110-10 5 5 0 010 10zm0-25a5 5 0 110-10 5 5 0 010 10zM0 30a5 5 0 110-10 5 5 0 010 10zM0 5A5 5 0 110-5 5 5 0 010 5zm12.5 12.5a5 5 0 110-10 5 5 0 010 10z'  stroke-width='1' stroke='none' fill='hsla(174, 100%, 29%, 1)'/><path d='M0 15a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm25 0a2.5 2.5 0 110-5 2.5 2.5 0 010 5zM12.5 2.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5zm0 25a2.5 2.5 0 110-5 2.5 2.5 0 010 5z'  stroke-width='1' stroke='none' fill='hsla(187, 100%, 42%, 1)'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>"); */
+        background-position: center center;
+        background-size: cover;
+        backface-visibility: hidden;
+        }
+        .card .front {transform: rotateY(180deg);}
+         .start-screen, .game-over-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .start-screen h2, .game-over-screen h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #FFACAC;
+        }
+
+        .start-screen p, .game-over-screen p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .start-btn, .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.5em;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover, .restart-btn:hover {transform: scale(1.05); background: #45a049;}
+
+        .game-over-screen {display: none;}
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="start-screen">
+        <h2>Memory Card Game</h2>
+        <p>Tìm tất cả các cặp thẻ giống nhau trong thời gian giới hạn!</p>
+        <p>Thời gian: 60 giây</p>
+        <p>High Score: <span id="start-high-score">0</span> điểm</p>
+        <button class="start-btn" onclick="startGame()">Bắt đầu</button>
+    </div>
+
+    <div class="game-over-screen">
+        <h2 id="game-over-title">Game Over!</h2>
+        <p id="game-over-message"></p>
+        <p>Điểm của bạn: <span id="final-score">0</span></p>
+        <p>High Score: <span id="end-high-score">0</span></p>
+        <button class="restart-btn" onclick="restartGame()">Chơi lại</button>
+    </div>
+    <h1>Lật thẻ</h1>
+      <div class="game-info">
+        <div class="stats">
+            <div class="stat">Thời gian: <span id="time">60</span>s</div>
+            <div class="stat">Điểm: <span class="score">0</span></div>
+            <div class="stat">High Score: <span id="high-score">0</span></div>
+        </div>
+    </div>
+    <div class="grid-container"></div>
+    <script>
+        const gridContainer = document.querySelector(".grid-container");
+        // let cards = [];
+        let firstCard, secondCard;
+        let lockBoard = false;
+        let score = 0;
+         let timeLeft = 60;
+        let timer;
+        let gameStarted = false;
+        let matchedPairs = 0;
+        const totalPairs = 9;
+        let highScore = localStorage.getItem('memoryHighScore') || 0;
+
+        document.getElementById('start-high-score').textContent = highScore;
+        document.getElementById('high-score').textContent = highScore;
+
+        let cards = [
+        { name: "cherries", image: "./assets/cherries.png" },
+        { name: "chili", image: "./assets/chili.png" },
+        { name: "grapes", image: "./assets/grapes.png" },
+        { name: "lemon", image: "./assets/lemon.png" },
+        { name: "orange", image: "./assets/orange.png" },
+        { name: "pineapple", image: "./assets/pineapple.png" },
+        { name: "strawberry", image: "./assets/strawberry.png" },
+        { name: "tomato", image: "./assets/tomato.png" },
+        { name: "watermelon", image: "./assets/watermelon.png" }
+        ];
+        function startGame() {
+            document.querySelector('.start-screen').style.display = 'none';
+            gameStarted = true;
+            resetGame();
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 60;
+            document.getElementById('time').textContent = timeLeft;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    gameOver(false, 'Hết giờ!');
+                }
+            }, 1000);
+        }
+
+          function resetGame() {
+            score = 0;
+            matchedPairs = 0;
+            document.querySelector('.score').textContent = score;
+            clearInterval(timer);
+            
+            const gridContainer = document.querySelector('.grid-container');
+            gridContainer.innerHTML = '';
+            
+            // Tạo bộ bài từ 9 cặp
+             // nhân đôi thẻ
+             cards = [...cards, ...cards];
+
+            shuffleCards();
+            generateCards();
+            resetBoard();
+        }
+       
+
+        document.querySelector(".score").textContent = score;
+
+        shuffleCards();
+        generateCards();
+
+        function generateCards() {
+            const gridContainer = document.querySelector('.grid-container');
+            cards.forEach((card, index) => {
+                const cardElement = document.createElement("div");
+                cardElement.classList.add("card");
+                cardElement.setAttribute("data-name", card.name);
+                cardElement.innerHTML = `
+                    <div class="front">
+                        <img class="front-image" src="${card.image}" />
+                    </div>
+                    <div class="back"></div>
+                `;
+                gridContainer.appendChild(cardElement);
+                cardElement.addEventListener("click", flipCard);
+            });
+        }
+
+        function shuffleCards() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+        }
+
+         function flipCard() {
+            if (!gameStarted || lockBoard || this.classList.contains('flipped')) return;
+            if (this === firstCard) return;
+
+            this.classList.add("flipped");
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            score++;
+            document.querySelector('.score').textContent = score;
+            lockBoard = true;
+
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            const isMatch = firstCard.dataset.name === secondCard.dataset.name;
+
+            if (isMatch) {
+                matchedPairs++;
+                disableCards();
+                if (matchedPairs === totalPairs) {
+                    setTimeout(() => gameOver(true, 'Chúc mừng! Bạn đã thắng!'), 500);
+                }
+            } else {
+                unflipCards();
+            }
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener("click", flipCard);
+            secondCard.removeEventListener("click", flipCard);
+            resetBoard();
+        }
+
+        function unflipCards() {
+            setTimeout(() => {
+                firstCard.classList.remove("flipped");
+                secondCard.classList.remove("flipped");
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [firstCard, secondCard, lockBoard] = [null, null, false];
+        }
+
+        function gameOver(isWin, message) {
+            gameStarted = false;
+            clearInterval(timer);
+            
+            if (isWin) {
+                score += timeLeft * 10;
+                document.querySelector('.score').textContent = score;
+            }
+            
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('memoryHighScore', highScore);
+            }
+            
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('end-high-score').textContent = highScore;
+            document.getElementById('game-over-message').textContent = message;
+            document.getElementById('game-over-title').textContent = isWin ? 'Chúc mừng!' : 'Game Over!';
+            document.querySelector('.game-over-screen').style.display = 'flex';
+        }
+
+        function restartGame() {
+            document.querySelector('.game-over-screen').style.display = 'none';
+            startGame();
+        }
+          // Tạo grid responsive
+        function resizeGrid() {
+            const gridContainer = document.querySelector('.grid-container');
+            const containerWidth = gridContainer.clientWidth;
+            const cardWidth = Math.min(140, (containerWidth - 50) / 6);
+            const cards = gridContainer.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.style.width = `${cardWidth}px`;
+                card.style.height = `${cardWidth * 1.5}px`;
+            });
+        }
+
+        window.addEventListener('resize', resizeGrid);
+        window.addEventListener('load', () => {
+            generateCards();
+            resizeGrid();
+        });
+    </script>
+</body>
+</html>

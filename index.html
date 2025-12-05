@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trang giới thiệu</title>
+  <link rel="stylesheet" href="style_index.css" />
+  <style>
+    /* Thiết lập chung cho toàn bộ trang */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    color: #3e1e68;
+}
+
+/* Container chính của trang giới thiệu */
+.landing-container {
+    background: #fcacac;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+}
+
+/* Tiêu đề chính */
+h1 {
+    font-size: 2.5em;
+    color: #3e1e68; 
+    margin-bottom: 10px;
+}
+
+/* Dòng giới thiệu (Tagline) */
+.tagline {
+    font-size: 1.2em;
+    color: #3e1e68;
+    margin-bottom: 30px;
+}
+
+/* Phần tính năng */
+.features {
+    text-align: left;
+    margin: 30px 0;
+    padding: 15px;
+    border: 1px solid #3e1e68;
+    border-radius: 8px;
+}
+
+.features h3 {
+    color: #5d2f77; /* Màu nhấn */
+    margin-top: 0;
+    font-size: 1.1em;
+}
+
+.features ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.features li {
+    padding: 8px 0;
+}
+
+.features li:last-child {
+    border-bottom: none;
+}
+
+/* Nút kêu gọi hành động (Call to Action) */
+.cta-button {
+    display: inline-block;
+    background-color: #e45a92;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none; /* Bỏ gạch chân */
+    border-radius: 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.1s;
+}
+
+.cta-button:hover {
+    background-color: #5d2f77;
+    transform: translateY(-2px);
+}
+
+  </style>
+</head>
+<body>
+  <div class="landing-container">
+    <header>
+      <h1>Chào mừng đến với Trò chơi quản lý năng suất Lil Flow</h1>
+    </header>
+
+    <main class="intro-content">
+      <p class="tagline">Thông qua việc năng suất, bạn sẽ nuôi lớn thú cưng ảo của mình</p>
+      
+      <div class="features">
+        <h3>Các tính năng chính:</h3>
+        <ul>
+          <li>Quản lý thời gian</li>
+          <li>Danh sách công việc (Tasks)</li>
+          <li>Sổ ghi chú cá nhân (Notes)</li>
+          <li>Nuôi lớn thú cưng bằng cách cho ăn, học hành và chơi game.</li>
+        </ul>
+      </div>
+
+      <a href="login.html" class="cta-button">
+        Bắt đầu ngay
+      </a>
+    </main>
+
+  </div>
+
+  </body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Phòng chơi</title>
+		<link rel="stylesheet" href="style_index.css">
+	</head>
+	<body>
+  		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #ffacac; font-size: 25px; text-align: center; flex-grow: 1;">Phòng game</p> <!--flex grow cho chiếm k gian còn lại-->
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -900px; ">
+				<tr>
+					<td >
+						<img src="assets/pet/pet_happy.png" alt="ur_pet" width="200px" height="200px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+				<div class="stats">
+					<table class="table2 center2">
+						<tr>
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar happiness" id="happinessBar">Vui vẻ</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar hunger" id="hungerBar">Đói bụng</div>
+								</div>
+							</td>	
+						</tr>
+						<tr>	
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar health" id="healthBar">Sức khỏe</div>
+								</div>
+							</td>
+						</tr>
+						<tr>	
+							<td colspan="3">
+								<div class="bar-container">
+									<div class="bar energy" id="energyBar">Năng lượng</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								<!-- <button onclick="sleepPet()">Ngủ</button> -->
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+					<ul class="nav">
+						<li> <a class="nav-button" id="game1-button">Game 1</a> </li>
+						<li> <a class="nav-button" id="game2-button">Game 2</a> </li>
+						<li> <a class="nav-button" id="game3-button">Game 3</a> </li>
+						<li> <a class="nav-button" id="game4-button">Game 4</a> </li>
+					</ul>
+			</div>
+		</div>
+
+        <div class="messages"> 
+			<span id="pet_name">Baby</span>: 
+			<p style="font-size: 30px">Chơi game nào.</p>
+		</div>
+	
+        <div class="secondary" id="close-all"> </div>
+        <div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+        </div>
+
+		<div id="settings" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+			<iframe src="settings.html" class="game-frame"></iframe>
+		</div>
+
+        <div id="game1" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <iframe src="game1.html" class="game-frame"></iframe>
+        </div>
+
+        <div id="game2" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <iframe src="game2.html" class="game-frame"></iframe>
+        </div>
+
+        <div id="game3" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <iframe src="game3.html" class="game-frame"></iframe>
+        </div>
+
+        <div id="game4" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+           <iframe src="game4.html" class="game-frame"></iframe>
+        </div>
+
+        <script>
+			window.API_BASE = 'http://localhost:3000/api';
+			/* ---------------------------
+			Utility: localStorage helpers
+			--------------------------- */
+			// POPUP MANAGEMENT
+			const popupIds = ["game1", "game2", "game3", "game4", "settings"];
+
+			function closeAllPopup() {
+				console.log('🔒 Closing all popups');
+				popupIds.forEach(id => {
+				const p = document.getElementById(id);
+				if (p) {
+					p.style.display = "none";
+					p.classList.remove('active');
+				}
+			});
+			
+			const overlay = document.getElementById('popup-overlay');
+				if (overlay) {
+					overlay.classList.remove('active');
+					overlay.style.display = "none";
+				}
+			}
+
+			function togglePopup(id) {
+				console.log('🎯 Toggle popup:', id);
+				const popup = document.getElementById(id);
+				if (!popup) {
+					console.error('❌ Popup not found:', id);
+					return;
+				}
+
+				const isVisible = popup.style.display === "flex" || popup.classList.contains('active');
+				
+				closeAllPopup();
+				
+				if (!isVisible) {
+					console.log('👉 Showing popup:', id);
+					popup.style.display = "flex";
+					popup.classList.add('active');
+					
+					// Create overlay
+					let overlay = document.getElementById('popup-overlay');
+					if (!overlay) {
+					overlay = document.createElement('div');
+					overlay.id = 'popup-overlay';
+					overlay.className = 'popup-overlay';
+					overlay.onclick = closeAllPopup;
+					document.body.appendChild(overlay);
+					}
+					overlay.classList.add('active');
+					overlay.style.display = "block";
+					
+					// Load content
+					// if (id === 'food') {
+					//   loadFoodList();
+					// } else if (id === 'potion') {
+					//   loadPotionList();
+					// }
+				}
+			}
+
+			// Gán sự kiện khi DOM loaded
+			document.addEventListener('DOMContentLoaded', function() {
+				console.log('✅ DOM loaded, initializing popup buttons...');
+				
+				// Gán sự kiện cho các nút
+				const g1 = document.getElementById("game1-button");
+				const g2 = document.getElementById("game2-button");
+				const g3 = document.getElementById("game3-button");
+				const g4 = document.getElementById("game4-button");
+				const set = document.getElementById("settings-button");
+				
+				if (g1) {
+					g1.addEventListener('click', function(e) {
+					e.preventDefault();
+					console.log('Lật thẻ');
+					togglePopup("game1");
+					});
+				}
+				
+				if (g2) {
+					g2.addEventListener('click', function(e) {
+					e.preventDefault();
+					console.log('Flappy bird');
+					togglePopup("game2");
+					});
+				}
+				
+				if (g3) {
+					g3.addEventListener('click', function(e) {
+					e.preventDefault();
+					console.log('Săn vịt');
+					togglePopup("game3");
+					});
+				}
+				if (g4) {
+					g4.addEventListener('click', function(e) {
+					e.preventDefault();
+					console.log('Pacman');
+					togglePopup("game4");
+					});
+				}
+				if (set) {
+					set.addEventListener('click', function(e) {
+					e.preventDefault();
+					console.log('Cài đặt');
+					togglePopup("settings");
+					});
+				}
+				
+					// Load initial data
+					loadCompactGrids();
+			});        
+		</script>
+        <script src="script.js"></script>
+		<script src="script_pet.js"></script>
+	</body>
+</html>

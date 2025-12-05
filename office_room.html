@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Phòng học</title>
+		<link rel="stylesheet" href="style_index.css">
+        <link rel="stylesheet" href="style_office_room.css">
+	</head>
+	<body>
+  		<div class="topbar">
+			<div id="logo" style="font-size: 50px; text-align: center;">👾</div>
+			<p style="color: #ffacac; font-size: 25px; text-align: center; flex-grow: 1;">Phòng học</p>
+			<p>
+				<span id="pet_name">Baby</span>
+			</p>
+			<div class="lag">
+				<div class="levels">
+					exp:
+					<span id="level">0</span>
+				</div>
+				<div class="golds">
+					<span id="gold">0</span>$
+				</div>
+			</div>
+			<div class="sau">
+				<a class="nav-button" id="settings-button" style="border-radius: 60px;">⚙️</a>
+			</div>
+		</div>
+		<div class="table-container">
+			<table class="table1 center bg" style="background-image: url('assets/background.png'); background-position:center -893px; ">
+				<tr>
+					<td style="padding: 100px 10px">
+						<img src="assets/pet/pet_happy.png" alt="ur_pet" width="200px" height="200px">
+					</td>
+				</tr>
+			</table>
+			<div class="right-section">
+                <div class="stats">
+                    <table class="table2 center2">
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar happiness" id="happinessBar">Vui vẻ</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar hunger" id="hungerBar">Đói bụng</div>
+                                </div>
+                            </td>	
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar health" id="healthBar">Sức khỏe</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>	
+                            <td colspan="3">
+                                <div class="bar-container">
+                                    <div class="bar energy" id="energyBar">Năng lượng</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+							<td>
+								<button onclick="feedPet()">Ăn</button>
+							</td>
+							<td>
+								 <button onclick="focusPet()">Học</button>
+							</td>
+							<td>
+								<button onclick="playPet()">Chơi</button>
+							</td>
+						</tr>
+                    </table>
+                </div>
+                <ul class="nav">
+                    <li> <a class="nav-button" id="timer-button">Timer</a> </li>
+                    <li> <a class="nav-button" id="task-calendar-button">Tasks</a> </li>
+                    <li> <a class="nav-button" id="history-button">History</a> </li>
+                </ul>
+            </div>
+		</div>
+
+        <div class="messages"> 
+			<span id="pet_name">Baby</span>: 
+			<p style="font-size: 30px">Cùng học thôi.</p>
+		</div>
+
+        <div class="transfer">
+            <a class="prev" onclick="plusSlides(-1)"> < </a>
+            <a class="next" onclick="plusSlides(1)"> > </a>
+        </div>
+
+        <div id="settings" class="popup" aria-hidden="true">
+			<div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+			<iframe src="settings.html" class="game-frame"></iframe>
+		</div>
+
+        <div id="timer" class="popup" aria-hidden="true">
+            <div class="head">
+                <h3>Focus Timer</h3>
+                <button onclick="closeAllPopup()">X</button>
+            </div>
+            <div class="body">
+                <div class="timer-container">
+                    <!-- Main Timer Section -->
+                    <div class="timer-main">
+                        <div class="timer-progress">
+                            <svg class="progress-ring" width="200" height="200">
+                                <circle class="progress-ring-circle" stroke-width="8" fill="transparent" r="90" cx="100" cy="100"/>
+                                <circle class="progress-ring-circle-filled" stroke-width="8" fill="transparent" r="90" cx="100" cy="100" 
+                                        stroke-dasharray="565.48" stroke-dashoffset="0"/>
+                            </svg>
+                            <div class="timer-display-inside" id="timer-display">25:00</div>
+                        </div>
+                        
+                        <div class="timer-input-group">
+                            <input id="minutes-input" type="number" min="1" max="120" value="25" />
+                            <label for="minutes-input">phút</label>
+                        </div>
+                        
+                        <div class="timer-buttons">
+                            <button id="start-btn" class="timer-btn start-btn">Bắt đầu</button>
+                            <button id="pause-btn" class="timer-btn pause-btn">Tạm dừng</button>
+                            <button id="reset-btn" class="timer-btn reset-btn">Đặt lại</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar with Presets and History -->
+                    <div class="timer-sidebar">
+                        <!-- Presets Section -->
+                        <div class="preset-section">
+                            <h4>Presets</h4>
+                            <div class="preset-input-group">
+                                <input id="preset-label" type="text" placeholder="Tên preset..." />
+                                <button id="save-preset" class="save-preset-btn">Lưu</button>
+                            </div>
+                            <div id="preset-list" class="preset-list">
+                                <!-- Presets will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- History Section -->
+                        <div class="history-section">
+                            <h4>Lịch sử</h4>
+                            <div id="timer-history-list" class="history-list">
+                                <!-- Timer history will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POPUP GỘP TASKS VÀ CALENDAR -->
+        <div id="task-calendar" class="popup" aria-hidden="true">
+            <div class="head">
+                <h3>Tasks & Calendar</h3>
+                <button onclick="closeAllPopup()">X</button>
+            </div>
+            <div class="body">
+                <div class="task-calendar-container">
+                    <!-- Calendar Section - Bên trái -->
+                    <div class="calendar-section">
+                        <h3>Lịch tháng</h3>
+                        <div class="calendar-header">
+                            <button id="prev-month">&lt;</button>
+                            <div id="calendar-month"></div>
+                            <button id="next-month">&gt;</button>
+                        </div>
+
+                        <table id="calendar-table">
+                            <thead>
+                                <tr>
+                                    <th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th>T7</th><th>CN</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calendar-body"></tbody>
+                        </table>
+
+                        <h4 id="selected-date-title" style="margin-top: 15px;"></h4>
+
+                        <div class="row">
+                            <input id="calendar-task-input" type="text" placeholder="Thêm kế hoạch cho ngày...">
+                            <button id="add-calendar-task">Thêm</button>
+                        </div>
+
+                        <ul id="calendar-task-list" class="tasks-list"></ul>
+                    </div>
+
+                    <!-- Tasks Section - Bên phải -->
+                    <div class="tasks-section">
+                        <h3>Tasks</h3>
+                        <div class="row" style="margin-top:8px; margin-bottom: 15px;">
+                            <button id="add-task" class="save-btn" style="width: 100%;">+ Thêm Task Mới</button>
+                        </div>
+                        <div class="tasks-list" id="tasks-list">
+                            <!-- Tasks sẽ được hiển thị ở đây -->
+                        </div>
+                    </div>
+
+                    <!-- Popup chi tiết task đơn giản -->
+                    <div id="task-detail-popup" class="popup" aria-hidden="true">
+                        <div class="head">
+                            <h3 id="task-detail-title">Tạo Task Mới</h3>
+                            <button onclick="closeTaskDetailPopup()">X</button>
+                        </div>
+                        <div class="body">
+                            <form id="task-detail-form" class="task-form">
+                                <div class="form-group">
+                                    <label for="task-title-input">Tiêu đề *</label>
+                                    <input type="text" id="task-title-input" required placeholder="Nhập tiêu đề task...">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="task-notes-input">Ghi chú</label>
+                                    <textarea id="task-notes-input" placeholder="Thêm ghi chú (tuỳ chọn)..."></textarea>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="button" class="cancel-btn" onclick="closeTaskDetailPopup()">Hủy</button>
+                                    <button type="button" class="delete-btn" id="delete-task-btn" style="display: none;" onclick="deleteCurrentTask()">Xóa</button>
+                                    <button type="submit" class="save-btn">Lưu Task</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="history" class="popup" aria-hidden="true">
+            <div class="head"><h3></h3><button onclick="closeAllPopup()">X</button></div>
+            <!-- <section class="card">
+                <h2>Lịch sử hoạt động</h2>
+                <h3>Tasks hoàn thành</h3>
+                <ul id="history-tasks"></ul>
+                <h3>Timers hoàn thành</h3>
+                <ul id="history-timers"></ul>
+            </section> -->
+            <p style="font-size: 75px;">Chức năng đang được phát triển</p>
+        </div>
+
+        <script>
+             // Định nghĩa biến toàn cục cho tất cả trang
+            window.API_BASE = 'http://localhost:3000/api';
+            /* ---------------------------
+			Utility: localStorage helpers
+			--------------------------- */
+		    const db = {
+                get(key, defaultVal) {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return defaultVal;
+                    try { return JSON.parse(raw); }
+                    catch { return defaultVal; }
+                },
+                set(key, value) {
+                    localStorage.setItem(key, JSON.stringify(value));
+                }
+            };
+
+            // POPUP IDS - CẬP NHẬT
+            const popupIds = ["timer", "task-calendar", "history", "settings"];
+
+            function closeAllPopup() {
+                popupIds.forEach(id => {
+                    const p = document.getElementById(id);
+                    if (p) p.style.display = "none";
+                });
+                
+            }
+
+            function togglePopup(id) {
+                const popup = document.getElementById(id);
+                if (!popup) return;
+
+                const isVisible = popup.style.display === "flex";
+
+                closeAllPopup();
+
+                if (!isVisible) {
+                    popup.style.display = "flex";
+                    // Khi mở popup task-calendar, render cả calendar và tasks
+                    if (id === "task-calendar") {
+                        renderCalendar();
+                        loadTasks();
+                    }
+                }
+            }
+
+            // Assign buttons - CẬP NHẬT
+            document.getElementById("settings-button").onclick = () => togglePopup("settings");
+            document.getElementById("timer-button").onclick = () => togglePopup("timer");
+            document.getElementById("task-calendar-button").onclick = () => togglePopup("task-calendar");
+            document.getElementById("history-button").onclick = () => togglePopup("history");
+
+            // Click outside popup to close
+            document.addEventListener("click", (e) => {
+                if (e.target.closest(".popup") || e.target.closest(".nav") ||  e.target.closest('.nav-button')) return;
+                closeAllPopup();
+            });
+
+        </script>
+        <script src="script_office.js"></script>
+        <script src="script_timer.js"></script>
+		<script src="script_pet.js"></script>
+	</body>
+</html>
