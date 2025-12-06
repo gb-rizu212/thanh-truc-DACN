@@ -62,7 +62,7 @@ nếu terminal hiện ra các console log kết nối thành công -> bạn đã
 ### Bước 4: Test trang web với acc test:
 - username: test
 - mật khẩu: 123
-nếu bạn được dưa vào trang chủ, xin chúc mừng bạn đã chạy server thành công! 
+- nếu bạn được dưa vào trang chủ, xin chúc mừng bạn đã chạy server thành công! 
 
 ## Manual testing checklist
 - Đăng ký/Đăng nhập thành công
